@@ -10,6 +10,9 @@ app.get('/', function (req, res) {
     res.render('home');
 });
 
+app.use(express.static('public'));
+
+
 app.get('/posts', function (req, res){
     var post = [
     { body: "the stuff" },
