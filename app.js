@@ -15,31 +15,40 @@ var mongoose = require('mongoose');
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 app.use(express.static('public'));
-mongoose.connect('mongodb://localhost/hello_world');
+mongoose.connect('mongodb://localhost/helloworld');
 var Post = require('./models/post.js');
 
 
+require('./controllers/posts')(app)
 
 // ROUTES
+// POSTS INDEX
 app.get('/', function (req, res) {
-    // Post.find(function (err, posts) {
-    //     res.render('home', {posts:posts});
-    // });
+    Post.find(function (err, posts) {
+        res.render('home', {posts:posts});
+    });
 });
 
 app.post('/posts',function(req, res) {
     console.log(req.body);
     var post = req.body
     Post.create(post, function (err,post){
-        if(err) {
+        if (err) {
             console.log(err);
         }
         else {
-            res.status(200).json(post)
+            res.status(200).json(post);
         }
+    });
+});
+
+// API POSTS INDEX
+app.get('/api/posts', function (req, res) {
+    Post.find().exec(function (err, posts) {
+        res.send(posts);
     })
 })
 
 app.listen(3000, function(){
-    console.log('hello_world listening on port 3000!')
-})
+    console.log('hello_world listening on port 3000!');
+});
